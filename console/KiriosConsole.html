@@ -1,0 +1,18 @@
+<div class="console" id="console">
+    <div class="console-header" id="consoleHeader">
+        <div class="console-header-title">Console</div>
+        <div class="console-header-actions" onclick="window.KiriosConsole.toggle()">[X]</div>
+
+    </div>
+    <div class="console-body" id="consoleBody">
+        <div class="console-body-logs">
+            <pre><code id="consoleLogs"></code></pre>
+        </div>
+    </div>
+    <div class="console-footer" id="consoleFooter">
+
+        <button type="button" onclick="window.KiriosConsole.clear()">Clear</button>
+        <button type="button" onclick="window.KiriosConsole.copy()">Copy</button>
+        <button type="button" onclick="window.KiriosConsole.download()">Download</button>
+    </div>
+</div>
