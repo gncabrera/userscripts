@@ -22,6 +22,14 @@
         });
     };
 
+    SelectionManager.toggleUnselected = function() {
+        console.log("toggle unselected");
+        $(".manual-import-row input:not(:checked)").each(function() {
+            var $this = $(this);
+            var $row = $this.parent().parent();
+            $row.toggle();
+        });
+    };
 
     /* ========== ROW MANAGER ============= */
 
@@ -193,10 +201,52 @@
         var that = this;
         var $body = $(".modal-body");
         FunctionManager.stop();
-        $body.prepend('<div class="row"  id="kiriosFeatures">	<div class="col-sm-3">	<button type="button" class="btn btn-default" id="btnSelectValid">Select valid</button>	<button type="button" class="btn btn-default" id="btnSelectInvalid">Select invalid</button>	</div>    <div class="col-sm-9">		<div class="form-horizontal">			<div class="form-group">				<label for="txtSerie" class="col-sm-2 control-label">Serie</label>				<div class="col-sm-10">				  <input type="text" class="form-control" id="txtSerie" placeholder="Serie">				</div>			</div>			<div class="form-group">				<label for="txtSeason" class="col-sm-2 control-label">Season</label>				<div class="col-sm-10">				  <input type="text" class="form-control" id="txtSeason" placeholder="Season">				</div>			</div>			<div class="form-group">				<label for="txtEpisode" class="col-sm-2 control-label">Episode</label>				<div class="col-sm-10">				  <input type="text" class="form-control" id="txtEpisode" placeholder="1">				</div>			</div>		</div>		<div class="row">			<div class="col-sm-2"></div>			<div class="col-sm-10">				<button type="button" class="btn btn-success" id="btnStart">Start Bot</button>				<button type="button" class="btn btn-warning" id="btnPause">Pause/Continue</button>				<button type="button" class="btn btn-danger" id="btnStop">Stop</button>			</div>		</div>	</div></div>');
+        $body.prepend(`<div class="row" id="kiriosFeatures" style="margin-left: 0; margin-right: 0;">
+    <div class="col-sm-3">
+        <div class="row">
+          <div class="col-12">
+            <button type="button" class="btn btn-default" id="btnSelectValid">Select valid</button>
+            <button type="button" class="btn btn-default" id="btnSelectInvalid">Select invalid</button>
+          </div>
+        </div>
+        <div class="row" style="margin-top: 10px">
+          <div class="col-12">
+            <button type="button" class="btn btn-default" id="btnToggleUnselected">Hide/Show Unselected</button>
+          </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="txtSerie" class="col-sm-2 control-label">Serie</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="txtSerie" placeholder="Serie"> </div>
+            </div>
+            <div class="form-group">
+                <label for="txtSeason" class="col-sm-2 control-label">Season</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="txtSeason" placeholder="Season"> </div>
+            </div>
+            <div class="form-group">
+                <label for="txtEpisode" class="col-sm-2 control-label">Episode</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="txtEpisode" placeholder="1"> </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+                <button type="button" class="btn btn-success" id="btnStart">Start Bot</button>
+                <button type="button" class="btn btn-warning" id="btnPause">Pause/Continue</button>
+                <button type="button" class="btn btn-danger" id="btnStop">Stop</button>
+            </div>
+        </div>
+    </div>
+</div>`);
 
         $("#btnSelectValid").click(SelectionManager.checkAllValid);
         $("#btnSelectInvalid").click(SelectionManager.checkAllInvalid);
+        $("#btnToggleUnselected").click(SelectionManager.toggleUnselected);
         $("#btnStart").click(that.startBot);
         $("#btnPause").click(function() {FunctionManager.togglePause(); });
         $("#btnStop").click(function() {FunctionManager.stop(); });
