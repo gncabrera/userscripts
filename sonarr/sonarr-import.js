@@ -137,16 +137,22 @@
 
     FunctionManager.pause = function() {
         this.paused = true;
+        UI.updatePauseContinueButton();
     };
 
     FunctionManager.togglePause = function() {
         this.paused = !this.paused;
+        UI.updatePauseContinueButton();
     };
     FunctionManager.continue = function() {
         this.paused = false;
+        UI.updatePauseContinueButton();
     };
     FunctionManager.stop = function() {
         this.funcs = [];
+        this.paused = false;
+        UI.updatePauseContinueButton();
+        TaskExecutor.clean();
     };
 
     window.FunctionManager = FunctionManager;
@@ -155,13 +161,18 @@
 
     var TaskExecutor = {};
 
+    TaskExecutor.totalTasks = 0;
+    TaskExecutor.processedTasks = 0;
     TaskExecutor.selectSeason = function(serie, seasonOptionNumber, startEpisodeNumber) {
         var rows = RowManager.getRows();
         var that = this;
+        that.clean();
         rows.forEach(row => {
             that.executeRow(row, serie, seasonOptionNumber, startEpisodeNumber);
             startEpisodeNumber++;
+            that.totalTasks++;
         });
+        UI.updateBotTotalCount();
     };
 
     TaskExecutor.executeRow = function($row, serie, seasonOptionNumber, episodeNumber) {
@@ -173,8 +184,15 @@
         FunctionManager.push(RowManager.seasons.select, seasonOptionNumber);
         FunctionManager.push(RowManager.episodes.clickCell, $row);
         FunctionManager.push(RowManager.episodes.select, episodeNumber);
+        FunctionManager.push(function() {TaskExecutor.processedTasks--; UI.updateBotTotalCount()});
+        TaskExecutor.processedTasks++;
     };
 
+    TaskExecutor.clean = function() {
+        TaskExecutor.totalTasks = 0;
+        TaskExecutor.processedTasks = 0;
+        UI.updateBotTotalCount();
+    }
     window.TaskExecutor = TaskExecutor;
 
     FunctionManager.init();
@@ -235,11 +253,12 @@
         </div>
         <div class="row">
             <div class="col-sm-2"></div>
-            <div class="col-sm-10">
+            <div class="col-sm-9">
                 <button type="button" class="btn btn-success" id="btnStart">Start Bot</button>
-                <button type="button" class="btn btn-warning" id="btnPause">Pause/Continue</button>
+                <button type="button" class="btn btn-warning" id="btnPause">Pause</button>
                 <button type="button" class="btn btn-danger" id="btnStop">Stop</button>
             </div>
+            <div class="col-sm-1"><span id="botTotalCount"></span></div>
         </div>
     </div>
 </div>`);
@@ -250,6 +269,21 @@
         $("#btnStart").click(that.startBot);
         $("#btnPause").click(function() {FunctionManager.togglePause(); });
         $("#btnStop").click(function() {FunctionManager.stop(); });
+    };
+
+    UI.updateBotTotalCount = function() {
+        var left = TaskExecutor.totalTasks - TaskExecutor.processedTasks;
+        $("#botTotalCount").html(left + "/" + TaskExecutor.totalTasks);
+    };
+
+    UI.updatePauseContinueButton = function() {
+        var button = $("#btnPause");
+        if(FunctionManager.paused) {
+            button.html("Continue");
+        }
+        else {
+            button.html("Pause");
+        }
     };
 
     UI.startBot = function() {
@@ -269,4 +303,32 @@
     $(document).keydown(function(e) {
         if (e.keyCode == 27) return false;
     });
+
+    $(document).on("click", ".select-row-cell", function() {
+        $(this).find("input[type=checkbox]").click();
+    });
+    $(document).on("click", ".select-row-cell input[type=checkbox]", function(e) {
+        e.stopPropagation();
+    });
 })();
+
+function addGlobalStyle(css) {
+   var head, style;
+   head = document.getElementsByTagName('head')[0];
+   if (!head) { return; }
+   style = document.createElement('style');
+   style.type = 'text/css';
+   style.innerHTML = css;
+   head.appendChild(style);
+}
+
+addGlobalStyle ( `
+    .manual-import-row td {
+        border-right: 1px #ddd solid;
+        border-left: 1px #ddd solid;
+    }
+    .manual-import-row td:hover {
+        background-color: #e8e8e8;
+        cursor: pointer;
+    }
+` );
