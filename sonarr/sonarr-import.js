@@ -1,7 +1,13 @@
 // ==UserScript==
-// @name Manual Import Select All
-// @match http://sonarr.kirios.com.ar/*
-// @grant none
+// @name        Sonarr Easier Manual Import
+// @namespace   https://github.com/gncabrera
+// @version     1.5.2
+// @updateURL   https://raw.githubusercontent.com/gncabrera/userscripts/master/sonarr/sonarr-import.js
+// @downloadURL https://raw.githubusercontent.com/gncabrera/userscripts/master/sonarr/sonarr-import.js
+// @author      gncabrera
+// @match       https://sonarr.kirios.com.ar/*
+// @match       https://la.sonarr.kirios.com.ar/*
+// @grant       none
 // ==/UserScript==
 
 (function() {
@@ -10,14 +16,14 @@
     var SelectionManager = {};
     SelectionManager.checkAllValid = function() {
         console.log("valid");
-        $(".has-series.has-season input[type=checkbox]").each(function() { 
+        $(".has-series.has-season input[type=checkbox]").each(function() {
             $(this).click();
         });
     };
 
     SelectionManager.checkAllInvalid = function() {
         console.log("invalid");
-        $(".manual-import-error input[type=checkbox]").each(function() { 
+        $(".manual-import-error input[type=checkbox]").each(function() {
             $(this).click();
         });
     };
