@@ -12,6 +12,11 @@
 (function() {
     'use strict';
 
+    var servers = {
+        "mega" : "MEGA",
+        "okServer" : "OK Server",
+        "yourUp" : "YourUp"
+    }
     console.log("Use https://addons.opera.com/en/extensions/details/copy-urls-2/ to copy all tabs from Opera");
     const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
@@ -19,18 +24,20 @@
         setTimeout(_ => resolve(), millis)
     });
 
-    window.openLinks = async function() {
+    window.openLinks = async function(server) {
         $(".box.lista a").each(function(i) {
             var href = $(this).attr("href");
             if(href){
                 setTimeout(function() {
-                    window.open(href);
+                    window.open(href + "?server=" + server);
                 }, i * 3000);
             }
         });
     }
 
-    $("#nav").append("<button class='bt-t fr' onclick='window.openLinks()'><i class='ic u2'></i><span>Abrir Links</span></button>")
+    $("#nav").append("<button class='bt-t fr' onclick='window.openLinks(\"okServer\")'><i class='ic u2'></i><span>Links OK Server</span></button>")
+    $("#nav").append("<button class='bt-t fr' onclick='window.openLinks(\"yourUp\")'><i class='ic u2'></i><span>Links Your UP</span></button>")
+    $("#nav").append("<button class='bt-t fr' onclick='window.openLinks(\"mega\")'><i class='ic u2'></i><span>Links Mega</span></button>")
 
 
     function openViteca() {
@@ -43,15 +50,31 @@
     }
 
     function openVideo() {
+        debugger;
+        var currentServer = getUrlVars()["server"];
+        if(!currentServer) currentServer = "mega";
         var btns = document.querySelectorAll("button.selop");
         for(var i = 0; i < btns.length; i++) {
             var btn = btns[i];
-            if(btn.innerText === "MEGA") {
+            if(btn.innerText === servers[currentServer]) {
                 $(btn).click();
                 setTimeout(openViteca, 5000);
             }
         }
     }
     setTimeout(openVideo, 5000);
+
+
+    function getUrlVars() {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
 
 })();
