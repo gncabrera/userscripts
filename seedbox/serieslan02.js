@@ -15,7 +15,7 @@
     function openMega() {
         debugger;
         var iframe = document.getElementsByTagName("iframe")[0];
-        if(iframe && iframe.src && iframe.src.includes("mega.nz")) {
+        if(iframe && iframe.src) {
             window.open(iframe.src);
             window.close();
         }
